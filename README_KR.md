@@ -4,32 +4,32 @@
 
 # jPinkSign
 
-`jPinkSign` is a Java library for working with Korean NPKI certificates and related crypto utilities.
+`jPinkSign`은 한국 NPKI 인증서와 관련 암호화 유틸리티를 다루기 위한 Java 라이브러리입니다.
 
 ## GitHub Packages
 
-Published coordinates:
+배포 위치:
 
 ```text
 io.github.realrains:jpinksign:<version>
 ```
 
-Registry URL:
+레지스트리 URL:
 
 ```text
 https://maven.pkg.github.com/realrains/jPinkSign
 ```
 
-### Consuming the package
+### 패키지 사용하기
 
-GitHub Packages requires authentication. For local Gradle usage, add credentials to `~/.gradle/gradle.properties`:
+GitHub Packages 는 인증이 필요합니다. 로컬 Gradle 환경에서는 `~/.gradle/gradle.properties`에 인증 정보를 추가하세요:
 
 ```properties
 gpr.user=YOUR_GITHUB_USERNAME
 gpr.key=YOUR_GITHUB_TOKEN
 ```
 
-Then add the GitHub Packages repository and dependency:
+그다음 GitHub Packages 저장소와 의존성을 추가하세요:
 
 ```kotlin
 repositories {
@@ -48,9 +48,9 @@ dependencies {
 }
 ```
 
-Your token needs package read access. If you consume this package from GitHub Actions, you can usually use `GITHUB_TOKEN` for packages in the same repository context.
+토큰에는 패키지 읽기 권한이 필요합니다. GitHub Actions에서 이 패키지를 사용하는 경우, 같은 저장소 컨텍스트에서는 일반적으로 `GITHUB_TOKEN`을 사용할 수 있습니다.
 
-### Simple example
+### 간단한 예제
 
 ```java
 import io.github.realrains.jpinksign.PinkSign;
@@ -75,6 +75,6 @@ public class Example {
 }
 ```
 
-## Maintainer publishing
+## 메인테이너 배포
 
-Package release instructions for maintainers are documented in [PUBLISH.md](PUBLISH.md).
+메인테이너용 패키지 릴리스 절차는 [PUBLISH.md](PUBLISH.md)에 정리되어 있습니다.
