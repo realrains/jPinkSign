@@ -56,7 +56,39 @@ dependencies {
 
 Your token needs package read access. If you consume this package from GitHub Actions, you can usually use `GITHUB_TOKEN` for packages in the same repository context.
 
-### Simple example
+### Usage examples
+
+The Java API supports explicit certificate file loading. Unlike the Python package, it does not currently provide automatic local certificate discovery by CN.
+
+#### Load `signCert.der` and `signPri.key`
+
+```java
+import io.github.realrains.jpinksign.PinkSign;
+
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+
+public class Example {
+    public static void main(String[] args) throws Exception {
+        PinkSign pinkSign = new PinkSign(
+            Path.of("signCert.der"),
+            Path.of("signPri.key"),
+            "password".getBytes(StandardCharsets.UTF_8)
+        );
+
+        byte[] message = "hello jPinkSign".getBytes(StandardCharsets.UTF_8);
+        byte[] signature = pinkSign.sign(message);
+        byte[] pkcs7SignedMessage = pinkSign.pkcs7SignedMessage(message);
+
+        System.out.println("CN: " + pinkSign.cn());
+        System.out.println("Issuer: " + pinkSign.issuer());
+        System.out.println("Verified: " + pinkSign.verify(signature, message));
+        System.out.println("PKCS#7 bytes: " + pkcs7SignedMessage.length);
+    }
+}
+```
+
+#### Load a PFX / PKCS#12 certificate
 
 ```java
 import io.github.realrains.jpinksign.PinkSign;
@@ -73,10 +105,12 @@ public class Example {
 
         byte[] message = "hello jPinkSign".getBytes(StandardCharsets.UTF_8);
         byte[] signature = pinkSign.sign(message);
+        byte[] pkcs7SignedMessage = pinkSign.pkcs7SignedMessage(message);
 
         System.out.println("CN: " + pinkSign.cn());
         System.out.println("Issuer: " + pinkSign.issuer());
         System.out.println("Verified: " + pinkSign.verify(signature, message));
+        System.out.println("PKCS#7 bytes: " + pkcs7SignedMessage.length);
     }
 }
 ```

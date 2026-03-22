@@ -56,7 +56,39 @@ dependencies {
 
 토큰에는 패키지 읽기 권한이 필요합니다. GitHub Actions에서 이 패키지를 사용하는 경우, 같은 저장소 컨텍스트에서는 일반적으로 `GITHUB_TOKEN`을 사용할 수 있습니다.
 
-### 간단한 예제
+### 사용 예제
+
+Java API는 인증서 파일 경로를 명시적으로 지정하는 방식을 지원합니다. Python 패키지와 달리, CN 기준으로 로컬 인증서를 자동 탐색하는 기능은 현재 제공하지 않습니다.
+
+#### `signCert.der`와 `signPri.key` 불러오기
+
+```java
+import io.github.realrains.jpinksign.PinkSign;
+
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+
+public class Example {
+    public static void main(String[] args) throws Exception {
+        PinkSign pinkSign = new PinkSign(
+            Path.of("signCert.der"),
+            Path.of("signPri.key"),
+            "password".getBytes(StandardCharsets.UTF_8)
+        );
+
+        byte[] message = "hello jPinkSign".getBytes(StandardCharsets.UTF_8);
+        byte[] signature = pinkSign.sign(message);
+        byte[] pkcs7SignedMessage = pinkSign.pkcs7SignedMessage(message);
+
+        System.out.println("CN: " + pinkSign.cn());
+        System.out.println("Issuer: " + pinkSign.issuer());
+        System.out.println("Verified: " + pinkSign.verify(signature, message));
+        System.out.println("PKCS#7 bytes: " + pkcs7SignedMessage.length);
+    }
+}
+```
+
+#### PFX / PKCS#12 인증서 불러오기
 
 ```java
 import io.github.realrains.jpinksign.PinkSign;
@@ -73,10 +105,12 @@ public class Example {
 
         byte[] message = "hello jPinkSign".getBytes(StandardCharsets.UTF_8);
         byte[] signature = pinkSign.sign(message);
+        byte[] pkcs7SignedMessage = pinkSign.pkcs7SignedMessage(message);
 
         System.out.println("CN: " + pinkSign.cn());
         System.out.println("Issuer: " + pinkSign.issuer());
         System.out.println("Verified: " + pinkSign.verify(signature, message));
+        System.out.println("PKCS#7 bytes: " + pkcs7SignedMessage.length);
     }
 }
 ```
