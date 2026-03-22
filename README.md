@@ -6,6 +6,12 @@
 
 `jPinkSign` is a Java library for working with Korean NPKI certificates and related crypto utilities.
 
+## Requirements
+
+- JDK 11 or newer
+
+This project is built with Java 11 source and target compatibility.
+
 ## GitHub Packages
 
 Published coordinates:
