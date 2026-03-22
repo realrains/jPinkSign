@@ -1,5 +1,9 @@
+import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.publish.maven.tasks.PublishToMavenRepository
+
 plugins {
     `java-library`
+    `maven-publish`
 }
 
 group = "io.github.realrains"
@@ -30,4 +34,46 @@ tasks.test {
 
 tasks.withType<JavaCompile>().configureEach {
     options.release.set(11)
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+            artifactId = "jpinksign"
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/realrains/jPinkSign")
+            credentials {
+                username = providers.gradleProperty("gpr.user")
+                    .orElse(providers.environmentVariable("GITHUB_ACTOR"))
+                    .orNull
+                password = providers.gradleProperty("gpr.key")
+                    .orElse(providers.environmentVariable("GITHUB_TOKEN"))
+                    .orNull
+            }
+        }
+    }
+}
+
+val requireReleaseVersion by tasks.registering {
+    group = "publishing"
+    description = "Fails GitHub Packages publishing when the project version is still a snapshot."
+
+    doLast {
+        check(!version.toString().endsWith("-SNAPSHOT")) {
+            "GitHub Packages publishing requires a non-SNAPSHOT version. " +
+                "Update version in build.gradle.kts before creating a release."
+        }
+    }
+}
+
+tasks.withType<PublishToMavenRepository>().configureEach {
+    if (repository.name == "GitHubPackages") {
+        dependsOn(requireReleaseVersion)
+    }
 }
