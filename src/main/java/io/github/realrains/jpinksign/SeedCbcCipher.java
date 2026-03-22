@@ -9,21 +9,35 @@ final class SeedCbcCipher {
     private SeedCbcCipher() {
     }
 
-    static byte[] encrypt(byte[] key, byte[] plaintext, byte[] iv) {
+    static byte[] encrypt(byte[] key, byte[] plaintext, byte[] iv) throws PinkSignException {
         validateKeyAndIv(key, iv);
         try {
             return encryptProvider(key, plaintext, iv);
         } catch (PinkSignException e) {
+            if (!e.retryWithPureFallback()) {
+                throw e;
+            }
+        }
+        try {
             return encryptPure(key, plaintext, iv);
+        } catch (IllegalArgumentException e) {
+            throw new PinkSignException("SEED pure encryption failed.", e);
         }
     }
 
-    static byte[] decrypt(byte[] key, byte[] ciphertext, byte[] iv) {
+    static byte[] decrypt(byte[] key, byte[] ciphertext, byte[] iv) throws PinkSignException {
         validateKeyAndIv(key, iv);
         try {
             return decryptProvider(key, ciphertext, iv);
         } catch (PinkSignException e) {
+            if (!e.retryWithPureFallback()) {
+                throw e;
+            }
+        }
+        try {
             return decryptPure(key, ciphertext, iv);
+        } catch (IllegalArgumentException e) {
+            throw new PinkSignException("SEED pure decryption failed.", e);
         }
     }
 

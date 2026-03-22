@@ -111,6 +111,9 @@ public final class PinkSign {
     }
 
     public void loadPublicKey(byte[] publicKeyData) throws PinkSignException {
+        if (publicKeyData == null) {
+            throw new IllegalArgumentException("Public key data is required.");
+        }
         this.publicData = Arrays.copyOf(publicKeyData, publicKeyData.length);
         this.publicKeyPath = null;
         loadPublicKey();
@@ -152,6 +155,9 @@ public final class PinkSign {
     }
 
     public void loadPrivateKey(byte[] encryptedPrivateKeyData, byte[] password) throws PinkSignException {
+        if (encryptedPrivateKeyData == null) {
+            throw new IllegalArgumentException("Private key data is required.");
+        }
         this.encryptedPrivateKeyData = Arrays.copyOf(encryptedPrivateKeyData, encryptedPrivateKeyData.length);
         this.privateKeyPassword = PinkSignSupport.copyNullable(password);
         this.privateKeyPath = null;
@@ -172,6 +178,9 @@ public final class PinkSign {
     }
 
     public void loadPkcs12(byte[] pkcs12Data) throws PinkSignException {
+        if (pkcs12Data == null) {
+            throw new IllegalArgumentException("PKCS#12 data is required.");
+        }
         this.pkcs12Data = Arrays.copyOf(pkcs12Data, pkcs12Data.length);
         NpkiMaterial material = PinkSignSupport.separatePkcs12IntoNpki(pkcs12Data, privateKeyPassword);
         loadPublicKey(material.publicKeyData());

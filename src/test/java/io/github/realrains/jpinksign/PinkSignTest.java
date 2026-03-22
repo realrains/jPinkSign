@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -156,7 +157,7 @@ class PinkSignTest {
     }
 
     @Test
-    void testSeedCbc128Encrypt() {
+    void testSeedCbc128Encrypt() throws Exception {
         assertArrayEquals(Fixtures.SEED_CIPHERTEXT, PinkSignFunctions.seedCbc128Encrypt(Fixtures.KEY, Fixtures.PLAINTEXT, Fixtures.IV));
     }
 
@@ -171,7 +172,7 @@ class PinkSignTest {
     }
 
     @Test
-    void testSeedCbc128Decrypt() {
+    void testSeedCbc128Decrypt() throws Exception {
         assertArrayEquals(Fixtures.PLAINTEXT, PinkSignFunctions.seedCbc128Decrypt(Fixtures.KEY, Fixtures.SEED_CIPHERTEXT, Fixtures.IV));
     }
 
@@ -209,6 +210,23 @@ class PinkSignTest {
     @Test
     void testEncryptDecryptedPrivateKey() throws Exception {
         assertEquals(Fixtures.SIGNPRI_B64, PinkSignFunctions.encryptDecryptedPrivateKey(Fixtures.PLAIN_SIGN_PRI_FULL_B64, Fixtures.CERT_PASSWORD, Fixtures.SIGN_PRI_SALT_B64));
+    }
+
+    @Test
+    void testEncryptDecryptedPrivateKeyHonorsIterationCount() throws Exception {
+        String encrypted = PinkSignFunctions.encryptDecryptedPrivateKey(
+            Fixtures.PLAIN_SIGN_PRI_FULL_B64,
+            Fixtures.CERT_PASSWORD,
+            Fixtures.SIGN_PRI_SALT_B64,
+            1
+        );
+        ASN1Sequence der = PinkSignSupport.parseSequence(Fixtures.decodeBase64(encrypted));
+        ASN1Sequence algorithmData = ASN1Sequence.getInstance(ASN1Sequence.getInstance(der.getObjectAt(0)).getObjectAt(1));
+        assertEquals(java.math.BigInteger.ONE, ASN1Integer.getInstance(algorithmData.getObjectAt(1)).getValue());
+
+        PinkSign cert = new PinkSign(Fixtures.CERT_PUBKEY_DER);
+        cert.loadPrivateKey(Fixtures.decodeBase64(encrypted), Fixtures.CERT_PASSWORD);
+        assertEquals(Fixtures.D, cert.privateKey().getPrivateExponent());
     }
 
     @Test

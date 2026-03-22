@@ -9,19 +9,19 @@ public final class PinkSignFunctions {
     private PinkSignFunctions() {
     }
 
-    public static byte[] seedCbc128Encrypt(byte[] key, byte[] plaintext) {
+    public static byte[] seedCbc128Encrypt(byte[] key, byte[] plaintext) throws PinkSignException {
         return seedCbc128Encrypt(key, plaintext, PinkSignSupport.DEFAULT_SEED_IV);
     }
 
-    public static byte[] seedCbc128Encrypt(byte[] key, byte[] plaintext, byte[] iv) {
+    public static byte[] seedCbc128Encrypt(byte[] key, byte[] plaintext, byte[] iv) throws PinkSignException {
         return SeedCbcCipher.encrypt(key, plaintext, iv);
     }
 
-    public static byte[] seedCbc128Decrypt(byte[] key, byte[] ciphertext) {
+    public static byte[] seedCbc128Decrypt(byte[] key, byte[] ciphertext) throws PinkSignException {
         return seedCbc128Decrypt(key, ciphertext, PinkSignSupport.DEFAULT_SEED_IV);
     }
 
-    public static byte[] seedCbc128Decrypt(byte[] key, byte[] ciphertext, byte[] iv) {
+    public static byte[] seedCbc128Decrypt(byte[] key, byte[] ciphertext, byte[] iv) throws PinkSignException {
         return SeedCbcCipher.decrypt(key, ciphertext, iv);
     }
 

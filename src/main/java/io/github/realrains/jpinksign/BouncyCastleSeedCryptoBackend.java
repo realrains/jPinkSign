@@ -1,6 +1,8 @@
 package io.github.realrains.jpinksign;
 
 import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -23,6 +25,8 @@ final class BouncyCastleSeedCryptoBackend implements SeedCryptoBackend {
             Cipher cipher = Cipher.getInstance("SEED/CBC/PKCS7Padding", PinkSignSupport.BC_PROVIDER_NAME);
             cipher.init(mode, new SecretKeySpec(key, "SEED"), new IvParameterSpec(iv));
             return cipher.doFinal(input);
+        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+            throw PinkSignException.retryWithPureFallback("SEED provider is unavailable.", e);
         } catch (GeneralSecurityException e) {
             throw new PinkSignException("SEED provider operation failed.", e);
         }

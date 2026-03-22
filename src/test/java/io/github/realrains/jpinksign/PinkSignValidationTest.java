@@ -12,6 +12,12 @@ class PinkSignValidationTest {
     }
 
     @Test
+    void testLoadPublicKeyRejectsNullData() {
+        PinkSign cert = new PinkSign();
+        assertThrows(IllegalArgumentException.class, () -> cert.loadPublicKey((byte[]) null));
+    }
+
+    @Test
     void testLoadPrivateKeyRequiresPublicKey() {
         PinkSign cert = new PinkSign();
         assertThrows(IllegalStateException.class, cert::loadPrivateKey);
@@ -21,6 +27,18 @@ class PinkSignValidationTest {
     void testLoadPrivateKeyRequiresPassword() throws Exception {
         PinkSign cert = new PinkSign(Fixtures.CERT_PUBKEY_DER);
         assertThrows(IllegalArgumentException.class, () -> cert.loadPrivateKey(Fixtures.CERT_PRIKEY_DER, null));
+    }
+
+    @Test
+    void testLoadPrivateKeyRejectsNullData() throws Exception {
+        PinkSign cert = new PinkSign(Fixtures.CERT_PUBKEY_DER);
+        assertThrows(IllegalArgumentException.class, () -> cert.loadPrivateKey((byte[]) null, Fixtures.CERT_PASSWORD));
+    }
+
+    @Test
+    void testLoadPkcs12RejectsNullData() {
+        PinkSign cert = new PinkSign();
+        assertThrows(IllegalArgumentException.class, () -> cert.loadPkcs12((byte[]) null));
     }
 
     @Test

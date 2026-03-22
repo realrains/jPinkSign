@@ -147,7 +147,7 @@ final class PinkSignSupport {
 
         ASN1EncodableVector algorithmData = new ASN1EncodableVector();
         algorithmData.add(new DEROctetString(salt));
-        algorithmData.add(new ASN1Integer(2048));
+        algorithmData.add(new ASN1Integer(iterationCount));
 
         ASN1EncodableVector algorithmIdentifier = new ASN1EncodableVector();
         algorithmIdentifier.add(ID_SEED_CBC_WITH_SHA1);
