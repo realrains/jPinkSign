@@ -10,6 +10,7 @@ import java.security.KeyFactory;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.cert.CertificateEncodingException;
+import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.RSAPrivateCrtKeySpec;
@@ -35,19 +36,20 @@ import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.CertificatePolicies;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
+import org.jspecify.annotations.Nullable;
 
 public final class PinkSign {
-    private Path publicKeyPath;
-    private Path privateKeyPath;
-    private Path pkcs12Path;
-    private byte[] encryptedPrivateKeyData;
-    private byte[] privateKeyPassword;
-    private byte[] pkcs12Data;
-    private byte[] publicData;
+    private @Nullable Path publicKeyPath;
+    private @Nullable Path privateKeyPath;
+    private @Nullable Path pkcs12Path;
+    private byte @Nullable [] encryptedPrivateKeyData;
+    private byte @Nullable [] privateKeyPassword;
+    private byte @Nullable [] pkcs12Data;
+    private byte @Nullable [] publicData;
 
-    private java.security.cert.X509Certificate publicCertificate;
-    private RSAPublicKey publicKey;
-    private RSAPrivateCrtKey privateKey;
+    private @Nullable X509Certificate publicCertificate;
+    private @Nullable RSAPublicKey publicKey;
+    private @Nullable RSAPrivateCrtKey privateKey;
 
     public PinkSign() {
     }
@@ -61,13 +63,19 @@ public final class PinkSign {
         loadPublicKey();
     }
 
-    public PinkSign(byte[] publicKeyData, byte[] privateKeyData, byte[] privateKeyPassword) throws PinkSignException {
+    public PinkSign(
+            byte[] publicKeyData,
+            byte @Nullable [] privateKeyData,
+            byte @Nullable [] privateKeyPassword) throws PinkSignException {
         loadPublicKey(publicKeyData);
         this.encryptedPrivateKeyData = PinkSignSupport.copyNullable(privateKeyData);
         this.privateKeyPassword = PinkSignSupport.copyNullable(privateKeyPassword);
     }
 
-    public PinkSign(Path publicKeyPath, Path privateKeyPath, byte[] privateKeyPassword) throws PinkSignException {
+    public PinkSign(
+            Path publicKeyPath,
+            @Nullable Path privateKeyPath,
+            byte @Nullable [] privateKeyPassword) throws PinkSignException {
         this.publicKeyPath = publicKeyPath;
         this.privateKeyPath = privateKeyPath;
         this.privateKeyPassword = PinkSignSupport.copyNullable(privateKeyPassword);
@@ -189,21 +197,21 @@ public final class PinkSign {
 
     public String cn() throws PinkSignException {
         ensurePublicKeyLoaded("Public key should be loaded before fetching CN.");
-        String value = PinkSignSupport.firstRdnValue(certificateHolder().getSubject(), BCStyle.CN);
+        @Nullable String value = PinkSignSupport.firstRdnValue(certificateHolder().getSubject(), BCStyle.CN);
         return value == null ? "" : value;
     }
 
-    public String issuer() throws PinkSignException {
+    public @Nullable String issuer() throws PinkSignException {
         ensurePublicKeyLoaded("Public key should be loaded before fetching issuer.");
         return PinkSignSupport.firstRdnValue(certificateHolder().getIssuer(), BCStyle.O);
     }
 
-    public String certClass() throws PinkSignException {
+    public @Nullable String certClass() throws PinkSignException {
         ensurePublicKeyLoaded("Public key should be loaded before fetching certificate class.");
         return PinkSignSupport.firstRdnValue(certificateHolder().getIssuer(), BCStyle.CN);
     }
 
-    public String certTypeOid() throws PinkSignException {
+    public @Nullable String certTypeOid() throws PinkSignException {
         ensurePublicKeyLoaded("Public key should be loaded before fetching certificate type.");
         Extension extension = certificateHolder().getExtension(Extension.certificatePolicies);
         if (extension == null) {
@@ -352,19 +360,19 @@ public final class PinkSign {
         }
     }
 
-    public RSAPublicKey publicKey() {
+    public @Nullable RSAPublicKey publicKey() {
         return publicKey;
     }
 
-    public RSAPrivateCrtKey privateKey() {
+    public @Nullable RSAPrivateCrtKey privateKey() {
         return privateKey;
     }
 
-    public byte[] publicData() {
+    public byte @Nullable [] publicData() {
         return PinkSignSupport.copyNullable(publicData);
     }
 
-    public byte[] encryptedPrivateKeyData() {
+    public byte @Nullable [] encryptedPrivateKeyData() {
         return PinkSignSupport.copyNullable(encryptedPrivateKeyData);
     }
 

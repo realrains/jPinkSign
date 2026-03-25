@@ -12,6 +12,8 @@
 
 This project is built with Java 11 source and target compatibility.
 
+The `io.github.realrains.jpinksign` package is `@NullMarked`, so types are non-nullable by default and only explicitly nullable APIs are marked.
+
 ## GitHub Packages
 
 Published coordinates:

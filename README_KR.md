@@ -12,6 +12,8 @@
 
 이 프로젝트는 Java 11 소스 및 타깃 호환성으로 빌드됩니다.
 
+`io.github.realrains.jpinksign` 패키지는 `@NullMarked`가 적용되어 있어 기본적으로 모든 타입이 non-nullable이며, nullable인 API만 명시적으로 표시됩니다.
+
 ## GitHub Packages
 
 배포 위치:

@@ -1,10 +1,20 @@
 package io.github.realrains.jpinksign;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
 class PinkSignValidationTest {
+    @Test
+    void testUnloadedAccessorsMayReturnNull() {
+        PinkSign cert = new PinkSign();
+        assertNull(cert.publicKey());
+        assertNull(cert.privateKey());
+        assertNull(cert.publicData());
+        assertNull(cert.encryptedPrivateKeyData());
+    }
+
     @Test
     void testLoadPublicKeyRequiresSource() {
         PinkSign cert = new PinkSign();

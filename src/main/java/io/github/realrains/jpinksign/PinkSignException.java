@@ -1,5 +1,7 @@
 package io.github.realrains.jpinksign;
 
+import org.jspecify.annotations.Nullable;
+
 public final class PinkSignException extends Exception {
     private final boolean retryWithPureFallback;
 
@@ -11,7 +13,7 @@ public final class PinkSignException extends Exception {
         this(message, cause, false);
     }
 
-    private PinkSignException(String message, Throwable cause, boolean retryWithPureFallback) {
+    private PinkSignException(String message, @Nullable Throwable cause, boolean retryWithPureFallback) {
         super(message, cause);
         this.retryWithPureFallback = retryWithPureFallback;
     }
@@ -20,7 +22,7 @@ public final class PinkSignException extends Exception {
         return new PinkSignException(message, null, true);
     }
 
-    static PinkSignException retryWithPureFallback(String message, Throwable cause) {
+    static PinkSignException retryWithPureFallback(String message, @Nullable Throwable cause) {
         return new PinkSignException(message, cause, true);
     }
 

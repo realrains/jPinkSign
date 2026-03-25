@@ -3,6 +3,8 @@ package io.github.realrains.jpinksign;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 
+import org.jspecify.annotations.Nullable;
+
 public final class PinkSignFunctions {
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
@@ -64,12 +66,19 @@ public final class PinkSignFunctions {
         return encryptDecryptedPrivateKey(privateKeyBase64, password, null, 2048);
     }
 
-    public static String encryptDecryptedPrivateKey(String privateKeyBase64, byte[] password, String saltBase64)
+    public static String encryptDecryptedPrivateKey(
+            String privateKeyBase64,
+            byte[] password,
+            @Nullable String saltBase64)
             throws PinkSignException {
         return encryptDecryptedPrivateKey(privateKeyBase64, password, saltBase64, 2048);
     }
 
-    public static String encryptDecryptedPrivateKey(String privateKeyBase64, byte[] password, String saltBase64, int iterationCount)
+    public static String encryptDecryptedPrivateKey(
+            String privateKeyBase64,
+            byte[] password,
+            @Nullable String saltBase64,
+            int iterationCount)
             throws PinkSignException {
         return PinkSignSupport.encryptDecryptedPrivateKey(privateKeyBase64, password, saltBase64, iterationCount);
     }

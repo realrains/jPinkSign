@@ -21,6 +21,7 @@ java {
 }
 
 dependencies {
+    api("org.jspecify:jspecify:1.0.0")
     implementation("org.bouncycastle:bcprov-jdk18on:1.79")
     implementation("org.bouncycastle:bcpkix-jdk18on:1.79")
 

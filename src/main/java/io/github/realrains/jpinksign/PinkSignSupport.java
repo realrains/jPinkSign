@@ -32,6 +32,7 @@ import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.jspecify.annotations.Nullable;
 
 final class PinkSignSupport {
     static final String BC_PROVIDER_NAME = BouncyCastleProvider.PROVIDER_NAME;
@@ -56,7 +57,7 @@ final class PinkSignSupport {
         }
     }
 
-    static byte[] copyNullable(byte[] value) {
+    static byte @Nullable [] copyNullable(byte @Nullable [] value) {
         return value == null ? null : Arrays.copyOf(value, value.length);
     }
 
@@ -130,7 +131,11 @@ final class PinkSignSupport {
         }
     }
 
-    static String encryptDecryptedPrivateKey(String privateKeyBase64, byte[] password, String saltBase64, int iterationCount)
+    static String encryptDecryptedPrivateKey(
+            String privateKeyBase64,
+            byte[] password,
+            @Nullable String saltBase64,
+            int iterationCount)
             throws PinkSignException {
         byte[] salt;
         if (saltBase64 == null) {
@@ -202,7 +207,7 @@ final class PinkSignSupport {
         return output;
     }
 
-    static String firstRdnValue(org.bouncycastle.asn1.x500.X500Name name, ASN1ObjectIdentifier oid) {
+    static @Nullable String firstRdnValue(org.bouncycastle.asn1.x500.X500Name name, ASN1ObjectIdentifier oid) {
         for (org.bouncycastle.asn1.x500.RDN rdn : name.getRDNs()) {
             for (org.bouncycastle.asn1.x500.AttributeTypeAndValue value : rdn.getTypesAndValues()) {
                 if (value.getType().equals(oid)) {
